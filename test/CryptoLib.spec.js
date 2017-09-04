@@ -49,7 +49,6 @@ describe('CryptoLib', function() {
 			});
 		});
 
-		/*
 		describe('SHA384', function() {
 			CryptoLib = getNewInstance();
 
@@ -57,7 +56,6 @@ describe('CryptoLib', function() {
 				expect(CryptoLib.algo.SHA384('Hello world!').toString()).to.equal('86255fa2c36e4b30969eae17dc34c772cbebdfc58b58403900be87614eb1a34b8780263f255eb5e65ca9bbb8641cccfe');
 			});
 		});
-        */
 
 		describe('SHA512', function() {
 			CryptoLib = getNewInstance();
