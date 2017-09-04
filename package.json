@@ -1,0 +1,21 @@
+{
+  "name": "wscript-emulator",
+  "version": "1.0.0",
+  "description": "WScript emulator. Emulates the Windows WScript object to make static analysis of WScript-dependent scripts easier",
+  "main": "./lib/CryptoLib.js",
+  "devDependencies": {
+    "browserify": "^14.4.0",
+    "chai": "^4.1.2",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.5.0"
+  },
+  "scripts": {
+    "build": "browserify ./lib/CryptoLib.js -o ./dist/CryptoLib.js",
+    "test": "mocha --recursive",
+    "test-coverage": "istanbul cover ./node_modules/mocha/bin/_mocha -- --recursive"
+  },
+  "engines": {
+    "node": ">=6.4.0"
+  },
+  "engineStrict": true
+}
