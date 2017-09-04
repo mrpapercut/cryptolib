@@ -10,7 +10,7 @@
     "mocha": "^3.5.0"
   },
   "scripts": {
-    "build": "browserify ./lib/CryptoLib.js -o ./dist/CryptoLib.js",
+    "build": "browserify ./test-module.js -o ./dist/CryptoLib.js",
     "test": "mocha --recursive",
     "test-coverage": "istanbul cover ./node_modules/mocha/bin/_mocha -- --recursive"
   },
