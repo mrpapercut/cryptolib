@@ -1,0 +1,93 @@
+components:
+    - core
+    - x64-core
+    - lib-typedarrays
+    - enc-utf16
+    - enc-base64
+    - md5
+    - sha1
+    - sha256
+    - sha224
+    - sha512
+    - sha384
+    - sha3
+    - ripemd160
+    - hmac
+    - pbkdf2
+    - evpkdf
+    - cipher-core
+    - mode-cfb
+    - mode-ctr
+    - mode-ctr-gladman
+    - mode-ofb
+    - mode-ecb
+    - pad-ansix923
+    - pad-iso10126
+    - pad-iso97971
+    - pad-zeropadding
+    - pad-nopadding
+    - format-hex
+    - aes
+    - tripledes
+    - rc4
+    - rabbit
+    - rabbit-legacy
+
+rollups:
+    md5:            [core, md5]
+    sha1:           [core, sha1]
+    sha256:         [core, sha256]
+    sha224:         [core, sha256, sha224]
+    sha512:         [core, x64-core, sha512]
+    sha384:         [core, x64-core, sha512, sha384]
+    sha3:           [core, x64-core, sha3]
+    ripemd160:      [core, ripemd160]
+
+    hmac-md5:       [core, md5, hmac]
+    hmac-sha1:      [core, sha1, hmac]
+    hmac-sha256:    [core, sha256, hmac]
+    hmac-sha224:    [core, sha256, sha224, hmac]
+    hmac-sha512:    [core, x64-core, sha512, hmac]
+    hmac-sha384:    [core, x64-core, sha512, sha384, hmac]
+    hmac-sha3:      [core, x64-core, sha3, hmac]
+    hmac-ripemd160: [core, ripemd160, hmac]
+
+    pbkdf2:         [core, sha1, hmac, pbkdf2]
+
+    aes:            [core, enc-base64, md5, evpkdf, cipher-core, aes]				128-bit key (min)
+    tripledes:      [core, enc-base64, md5, evpkdf, cipher-core, tripledes]			168/192-bit key
+    rc4:            [core, enc-base64, md5, evpkdf, cipher-core, rc4]				40-bit (min)
+    rabbit:         [core, enc-base64, md5, evpkdf, cipher-core, rabbit]
+    rabbit-legacy:  [core, enc-base64, md5, evpkdf, cipher-core, rabbit-legacy]
+
+key sizes:
+AES		128-bit (min)
+DES		56-bit
+3DES	168-bit (192 but 24 bits discarded)
+RC4		40-bit (min)
+RC5		128-bit (min recommended)
+RC6		128/192/256-bits
+Rabbit	128-bit key and a 64-bit initialization vector
+
+Table of broken ciphers:
+https://en.wikipedia.org/wiki/Cipher_security_summary
+
+Block ciphers:
+Common algorithms:
+AES, Blowfish, DES, Serpent, Twofish
+
+Less common algorithms:
+Camellia, CAST-128, IDEA, RC2, RC5, RC6, SEED, ARIA, Skipjack, TEA, XTEA
+
+Other algorithms:
+3-Way, Akelarre, Anubis, BaseKing, BassOmatic, BATON, BEAR and LION, CAST-256, Chiasmus, CIKS-1, CIPHERUNICORN-A, CIPHERUNICORN-E, CLEFIA, CMEA, Cobra, COCONUT98, Crab, Cryptomeria/C2, CRYPTON, CS-Cipher, DEAL, DES-X, DFC, E2, FEAL, FEA-M, FROG, G-DES, GOST, Grand Cru, Hasty Pudding cipher, Hierocrypt, ICE, IDEA NXT, Intel Cascade Cipher, Iraqi, Kalyna, KASUMI, KeeLoq, KHAZAD, Khufu and Khafre, KN-Cipher, Kuznyechik, Ladder-DES, Libelle, LOKI (97, 89/91), Lucifer, M6, M8, MacGuffin, Madryga, MAGENTA, MARS, Mercy, MESH, MISTY1, MMB, MULTI2, MultiSwap, New Data Seal, NewDES, Nimbus, NOEKEON, NUSH, PRESENT, Prince, Q, RC6, REDOC, Red Pike, S-1, SAFER, SAVILLE, SC2000, SHACAL, SHARK, Simon, SM4, Speck, Spectr-H64, Square, SXAL/MBAL, Threefish, Treyfer, UES, Xenon, xmx, XXTEA, Zodiac
+
+Stream ciphers:
+Common algorithms:
+RC4, ChaCha
+
+Less common algorithms:
+HC-256, Rabbit, Salsa20, SOSEMANUK
+
+Other algorithms:
+A5/1, A5/2, Achterbahn, E0, F-FCSR, FISH, ISAAC, Keccak, MUGI, Panama, Phelix, Pike, Py, QUAD, Scream, SEAL, SNOW, SOBER, SOBER-128, VEST, VMPC, WAKE

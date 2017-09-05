@@ -1,7 +1,7 @@
 {
-  "name": "wscript-emulator",
+  "name": "cryptolib",
   "version": "1.0.0",
-  "description": "WScript emulator. Emulates the Windows WScript object to make static analysis of WScript-dependent scripts easier",
+  "description": "ES6 refactored NodeJS version of CryptoJS, with additional features",
   "main": "./lib/CryptoLib.js",
   "devDependencies": {
     "browserify": "^14.4.0",
