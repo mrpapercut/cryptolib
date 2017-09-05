@@ -9,13 +9,24 @@ var getFilePath = function(filename) {
 }
 
 const CryptoLib = require(getFilePath('CryptoLib'));
-console.log(CryptoLib);
 
 describe('CryptoLib', function() {
 	describe('Hashers', function() {
 		describe('MD5', function() {
 			it('should return correct hash', function() {
 				expect(CryptoLib.MD5('Hello world!').toString()).to.equal('86fb269d190d2c85f6e0468ceca42a20');
+			});
+		});
+
+		describe('RIPEMD-160', function() {
+			it('should return correct hash', function() {
+				expect(CryptoLib.RIPEMD160('Hello world!').toString()).to.equal('7f772647d88750add82d8e1a7a3e5c0902a346a3');
+			});
+		});
+
+		describe('SHA224', function() {
+			it('should return correct hash', function() {
+				expect(CryptoLib.SHA224('Hello world!').toString()).to.equal('7e81ebe9e604a0c97fef0e4cfe71f9ba0ecba13332bde953ad1c66e4');
 			});
 		});
 
@@ -37,14 +48,10 @@ describe('CryptoLib', function() {
 			});
 		});
 
-        /*
-		describe('SHA3', function() {
-			CryptoLib = getNewInstance();
-
-			it('should return hash ???', function() {
-				expect(CryptoLib.algo.SHA3('Hello world!').toString()).to.equal('???');
+		describe('SHA3-512', function() {
+			it('should return correct hash', function() {
+				expect(CryptoLib.SHA3('Hello world!').toString()).to.equal('4010e792acb33c767f1bd0a49619769bf044eef2e8aca32717149dbc95e2b27ddc24aa8528c6a7f2a18b926c45d0aff290c18f1edfa04fce3ce91b7c69f3e5f5');
 			});
 		});
-		*/
 	});
 });
