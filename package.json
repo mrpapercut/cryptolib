@@ -6,13 +6,11 @@
   "devDependencies": {
     "browserify": "^14.4.0",
     "chai": "^4.1.2",
-    "istanbul": "^0.4.5",
     "mocha": "^3.5.0"
   },
   "scripts": {
-    "build": "browserify ./test-module.js -o ./dist/CryptoLib.js",
-    "test": "mocha --recursive",
-    "test-coverage": "istanbul cover ./node_modules/mocha/bin/_mocha -- --recursive"
+    "build": "browserify ./lib/CryptoLib.js -o ./dist/CryptoLib.js",
+    "test": "mocha --recursive"
   },
   "engines": {
     "node": ">=6.4.0"
