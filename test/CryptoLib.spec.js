@@ -9,8 +9,37 @@ var getFilePath = function(filename) {
 }
 
 const CryptoLib = require(getFilePath('CryptoLib'));
+const WordArray = require(getFilePath('WordArray'));
+
+const wordArray = new WordArray();
 
 describe('CryptoLib', function() {
+	describe('Encoders', function() {
+		const encoded = {
+			Base64: 'SGVsbG8gd29ybGQh',
+			Hex: '48656c6c6f20776f726c6421',
+			Latin1: 'Hello world!',
+			Utf8: 'Hello world!',
+			Utf16: '䡥汬漠睯牬搡',
+			Utf16BE: '䡥汬漠睯牬搡',
+			Utf16LE: '效汬⁯潷汲Ⅴ'
+		}
+
+		for (let str in encoded) {
+			describe(str, function() {
+				let myStr = CryptoLib.Encoder.Latin1.parse(unescape(encodeURIComponent('Hello world!')));
+
+				it('should stringify to match the pre-encoded string', function() {
+					expect(CryptoLib.Encoder[str].stringify(myStr).toString()).to.equal(encoded[str]);
+				});
+
+				it('should parse to match the original string', function() {
+					expect(CryptoLib.Encoder[str].parse(encoded[str]).toString()).to.equal(myStr.toString());
+				});
+			});
+		}
+	});
+
 	describe('Hashers', function() {
 		const hashes = {
 			MD5: '86fb269d190d2c85f6e0468ceca42a20',
