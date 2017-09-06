@@ -4,9 +4,13 @@
   "description": "ES6 refactored NodeJS version of CryptoJS, with additional features",
   "main": "./lib/CryptoLib.js",
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
     "browserify": "^14.4.0",
     "chai": "^4.1.2",
-    "mocha": "^3.5.0"
+    "mocha": "^3.5.0",
+    "webpack": "^3.5.5"
   },
   "scripts": {
     "build": "browserify ./lib/CryptoLib.js -o ./dist/CryptoLib.js",
