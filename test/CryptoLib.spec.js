@@ -84,22 +84,25 @@ describe('CryptoLib', function() {
 		for (let hasher in hashes) {
 			describe(hasher, function() {
 				it('should match the precalculated hash', function() {
-					expect(CryptoLib[hasher]('Hello world!', 'foobar').toString()).to.equal(hashes[hasher]);
+					expect(CryptoLib[hasher](message, key).toString()).to.equal(hashes[hasher]);
 				});
 			});
 		}
 	});
 
-	describe('Helpers', function() {
+	describe('Key Derivers', function() {
+		const message = 'Hello world!';
+		const key = 'foobar';
+
 		describe('EvpKDF', function() {
 			it('should return correct hex-string', function() {
-				expect(CryptoLib.EvpKDF('passphrase', 'salt').toString()).to.equal('d39d3bb918ebd684384544546b709380');
+				expect(CryptoLib.EvpKDF(message, key).toString()).to.equal('9eea7c53efe4571fec80019633766b9f');
 			});
 		});
 
 		describe('PBKDF2', function() {
 			it('should return correct hex-string', function() {
-
+				expect(CryptoLib.PBKDF2(message, key).toString()).to.equal('0b5554c7d3271e67600bf65bcb670e9a');
 			});
 		});
 	});
