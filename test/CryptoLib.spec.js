@@ -10,10 +10,15 @@ var getFilePath = function(filename) {
 
 const CryptoLib = require(getFilePath('CryptoLib'));
 const WordArray = require(getFilePath('WordArray'));
+const Latin1    = require(getFilePath('./Encoders/Latin1'));
 
 const wordArray = new WordArray();
 
 describe('CryptoLib', function() {
+	describe('Ciphers', function() {
+
+	});
+
 	describe('Encoders', function() {
 		const encoded = {
 			Base64: 'SGVsbG8gd29ybGQh',
@@ -59,5 +64,47 @@ describe('CryptoLib', function() {
 				});
 			});
 		}
+	});
+
+	describe('Hashers with HMAC', function() {
+		const message = 'Hello world!';
+		const key = 'foobar';
+
+		const hashes = {
+			HMAC_MD5: '197786ad5a5a186e1c57ffab8de78de6',
+			HMAC_RIPEMD160: '52419296d2a46d3675a9aaaeff7d68c75d2f41c1',
+			HMAC_SHA1: '8dd350dd2c990c6ec9033b60ad6f41bd29d5c5cf',
+			HMAC_SHA224: 'edb140a5e37cccfe8e526a09879dba9013731cd5d5db075791b1d2ee',
+			HMAC_SHA256: '28d4e22bf0598af9d6f21d7079427396e62d162dabf3cfe71946795d576c9fa9',
+			HMAC_SHA384: '267884f4974040096177745e950e692e4cb29fde5d4b730e8c5501374bf06ccd94604c50a81db420ffe4b39403708cfa',
+			HMAC_SHA512: '65bb3d2c37c1ff3b3c0aec3f9b7673d4ee1ce7873d5cef89f12e1a97ed2aee94d52dc5166b789150e643a14209c33eabdea36e3e3eb54c45e0cdbe0e41d07f4e',
+			HMAC_SHA3: '789db8a3b1246a4a337909337f4119b9530443f4e0fa2cd6a544aef58e226ea13fa52509fdaad02ef6c8c3a157fbf1399c1e832e5432494060a3c8d0c07a2cac'
+		}
+
+		for (let hasher in hashes) {
+			describe(hasher, function() {
+				it('should match the precalculated hash', function() {
+					expect(CryptoLib[hasher]('Hello world!', 'foobar').toString()).to.equal(hashes[hasher]);
+				});
+			});
+		}
+	});
+
+	describe('Helpers', function() {
+		describe('EvpKDF', function() {
+			it('should return correct hex-string', function() {
+				expect(CryptoLib.EvpKDF('passphrase', 'salt').toString()).to.equal('d39d3bb918ebd684384544546b709380');
+			});
+		});
+
+		describe('PBKDF2', function() {
+			it('should return correct hex-string', function() {
+
+			});
+		});
+	});
+
+	describe('Packers', function() {
+
 	});
 });
