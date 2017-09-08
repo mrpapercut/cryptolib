@@ -16,7 +16,11 @@ const wordArray = new WordArray();
 
 describe('CryptoLib', function() {
 	describe('Ciphers', function() {
-
+		describe('AES', function() {
+			it('should encrypt string', function() {
+				expect(CryptoLib.AES.encrypt('Hello world!', 'foobar')).to.equal('lolwut');
+			});
+		});
 	});
 
 	describe('Encoders', function() {
