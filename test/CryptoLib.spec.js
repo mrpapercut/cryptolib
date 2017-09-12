@@ -16,17 +16,28 @@ const wordArray = new WordArray();
 
 describe('CryptoLib', function() {
 	describe('Ciphers', function() {
-		describe('AES', function() {
-			const encrypted = CryptoLib.AES.encrypt('Hello world!', 'foobar').toString();
+		const encrypted = {
+			'AES': {
+				length: 44
+			},
+			'Rabbit': {
+				length: 40
+			}
+		};
 
-			it('should encrypt string', function() {
-				expect(encrypted.length).to.equal(44);
-			});
+		for (let cipher in encrypted) {
+			describe(cipher, function() {
+				const encryptedStr = CryptoLib[cipher].encrypt('Hello world!', 'foobar').toString();
 
-			it('should decrypt string to original', function() {
-				expect(CryptoLib.AES.decrypt(encrypted, 'foobar').toString(Latin1)).to.equal('Hello world!');
+				it('should encrypt string', function() {
+					expect(encryptedStr.length).to.equal(encrypted[cipher].length);
+				});
+
+				it('should decrypt string to original', function() {
+					expect(CryptoLib[cipher].decrypt(encryptedStr, 'foobar').toString(Latin1)).to.equal('Hello world!');
+				});
 			});
-		});
+		}
 	});
 
 	describe('Encoders', function() {
