@@ -17,8 +17,14 @@ const wordArray = new WordArray();
 describe('CryptoLib', function() {
 	describe('Ciphers', function() {
 		describe('AES', function() {
+			const encrypted = CryptoLib.AES.encrypt('Hello world!', 'foobar').toString();
+
 			it('should encrypt string', function() {
-				expect(CryptoLib.AES.encrypt('Hello world!', 'foobar')).to.equal('lolwut');
+				expect(encrypted.length).to.equal(44);
+			});
+
+			it('should decrypt string to original', function() {
+				expect(CryptoLib.AES.decrypt(encrypted, 'foobar').toString(Latin1)).to.equal('Hello world!');
 			});
 		});
 	});
