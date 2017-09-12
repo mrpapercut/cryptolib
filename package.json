@@ -10,10 +10,12 @@
     "browserify": "^14.4.0",
     "chai": "^4.1.2",
     "mocha": "^3.5.0",
+    "uglifyify": "^4.0.3",
     "webpack": "^3.5.5"
   },
   "scripts": {
-    "build": "browserify ./lib/CryptoLib.js -o ./dist/CryptoLib.js",
+    "build": "browserify -r ./lib/CryptoLib.js:CryptoLib -o ./dist/CryptoLib.js",
+    "build-min": "browserify -t uglifyify -r ./lib/CryptoLib.js:CryptoLib -o ./dist/CryptoLib.js",
     "test": "mocha --recursive"
   },
   "engines": {
