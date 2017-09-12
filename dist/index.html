@@ -93,42 +93,30 @@ button:hover {
 <script>
 const CryptoLib = require('CryptoLib');
 
-// Elements
-// AES
-let [aesInput, aesOutput, aesPass, aesBtnEnc, aesBtnDec] =
-	['aes-input', 'aes-output', 'aes-pass', 'aes-enc', 'aes-dec'].map(id => document.getElementById(id));
-aesBtnEnc.addEventListener('click', _ => aesOutput.value = CryptoLib.AES.encrypt(aesInput.value, aesPass.value).toString());
-aesBtnDec.addEventListener('click', _ => aesOutput.value = CryptoLib.AES.decrypt(aesInput.value, aesPass.value).toString(CryptoLib.Encoder.Latin1));
+const byteCount = str => new TextEncoder().encode(str).byteLength * 8;
 
-// DES
-let [desInput, desOutput, desPass, desBtnEnc, desBtnDec] =
-	['des-input', 'des-output', 'des-pass', 'des-enc', 'des-dec'].map(id => document.getElementById(id));
-desBtnEnc.addEventListener('click', _ => desOutput.value = CryptoLib.DES.encrypt(desInput.value, desPass.value).toString());
-desBtnDec.addEventListener('click', _ => desOutput.value = CryptoLib.DES.decrypt(desInput.value, desPass.value).toString(CryptoLib.Encoder.Latin1));
+// Ciphers
+const ciphers = {
+	aes: 'AES',
+	des: 'DES',
+	rabbit: 'Rabbit',
+	rc4: 'RC4',
+	rc4drop: 'RC4Drop',
+	tripledes: 'TripleDes'
+}
 
-// Rabbit
-let [rabbitInput, rabbitOutput, rabbitPass, rabbitBtnEnc, rabbitBtnDec] =
-	['rabbit-input', 'rabbit-output', 'rabbit-pass', 'rabbit-enc', 'rabbit-dec'].map(id => document.getElementById(id));
-rabbitBtnEnc.addEventListener('click', _ => rabbitOutput.value = CryptoLib.Rabbit.encrypt(rabbitInput.value, rabbitPass.value).toString());
-rabbitBtnDec.addEventListener('click', _ => rabbitOutput.value = CryptoLib.Rabbit.decrypt(rabbitInput.value, rabbitPass.value).toString(CryptoLib.Encoder.Latin1));
+for (let cipher in ciphers) {
+	(() => {
+		let [input, output, pass, btnEnc, btnDec] =
+			['input', 'output', 'pass', 'enc', 'dec'].map(id => document.getElementById(cipher + '-' + id));
 
-// RC4
-let [rc4Input, rc4Output, rc4Pass, rc4BtnEnc, rc4BtnDec] =
-	['rc4-input', 'rc4-output', 'rc4-pass', 'rc4-enc', 'rc4-dec'].map(id => document.getElementById(id));
-rc4BtnEnc.addEventListener('click', _ => rc4Output.value = CryptoLib.RC4.encrypt(rc4Input.value, rc4Pass.value).toString());
-rc4BtnDec.addEventListener('click', _ => rc4Output.value = CryptoLib.RC4.decrypt(rc4Input.value, rc4Pass.value).toString(CryptoLib.Encoder.Latin1));
+		btnEnc.addEventListener('click', _=>
+			output.value = CryptoLib[ciphers[cipher]].encrypt(input.value, pass.value).toString());
 
-// RC4Drop
-let [rc4dropInput, rc4dropOutput, rc4dropPass, rc4dropBtnEnc, rc4dropBtnDec] =
-	['rc4drop-input', 'rc4drop-output', 'rc4drop-pass', 'rc4drop-enc', 'rc4drop-dec'].map(id => document.getElementById(id));
-rc4dropBtnEnc.addEventListener('click', _ => rc4dropOutput.value = CryptoLib.RC4Drop.encrypt(rc4dropInput.value, rc4dropPass.value).toString());
-rc4dropBtnDec.addEventListener('click', _ => rc4dropOutput.value = CryptoLib.RC4Drop.decrypt(rc4dropInput.value, rc4dropPass.value).toString(CryptoLib.Encoder.Latin1));
-
-// TripleDes
-let [tripledesInput, tripledesOutput, tripledesPass, tripledesBtnEnc, tripledesBtnDec] =
-	['tripledes-input', 'tripledes-output', 'tripledes-pass', 'tripledes-enc', 'tripledes-dec'].map(id => document.getElementById(id));
-tripledesBtnEnc.addEventListener('click', _ => tripledesOutput.value = CryptoLib.TripleDes.encrypt(tripledesInput.value, tripledesPass.value).toString());
-tripledesBtnDec.addEventListener('click', _ => tripledesOutput.value = CryptoLib.TripleDes.decrypt(tripledesInput.value, tripledesPass.value).toString(CryptoLib.Encoder.Latin1));
+		btnDec.addEventListener('click', _=>
+			output.value = CryptoLib[ciphers[cipher]].decrypt(input.value, pass.value).toString(CryptoLib.Encoder.Latin1));
+	})();
+}
 </script>
 </body>
 </html>
