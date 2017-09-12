@@ -17,10 +17,16 @@ const wordArray = new WordArray();
 describe('CryptoLib', function() {
 	describe('Ciphers', function() {
 		const encrypted = {
-			'AES': {
+			AES: {
 				length: 44
 			},
-			'Rabbit': {
+			Rabbit: {
+				length: 40
+			},
+			RC4: {
+				length: 40
+			},
+			RC4Drop: {
 				length: 40
 			}
 		};
