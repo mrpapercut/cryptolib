@@ -20,6 +20,12 @@ describe('CryptoLib', function() {
 			AES: {
 				length: 44
 			},
+			DES: {
+				length: 44
+			},
+			TripleDes: {
+				length: 44
+			},
 			Rabbit: {
 				length: 40
 			},
