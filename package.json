@@ -10,12 +10,16 @@
     "browserify": "^14.4.0",
     "chai": "^4.1.2",
     "mocha": "^3.5.0",
+    "rollup": "^0.49.3",
+    "rollup-plugin-closure-compiler-js": "^1.0.5",
     "uglifyify": "^4.0.3",
     "webpack": "^3.5.5"
   },
   "scripts": {
     "build": "browserify -r ./lib/CryptoLib.js:CryptoLib -o ./dist/CryptoLib.js",
+    "build-rsa": "browserify -r ./lib/Ciphers/rsa.js:RSAKey -o ./dist/rsa.js",
     "build-min": "browserify -t uglifyify -r ./lib/CryptoLib.js:CryptoLib -o ./dist/CryptoLib.js",
+	"rollup-aes": "rollup -c",
     "test": "mocha --recursive"
   },
   "engines": {
