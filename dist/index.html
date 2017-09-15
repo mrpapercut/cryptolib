@@ -8,6 +8,11 @@ body, input, button {
 	font-family: 'Ubuntu Mono', monospace;
 }
 
+body {
+	width: 1280px;
+	margin: 0 auto;
+}
+
 input {
 	width: 400px;
 	height: 25px;
@@ -29,6 +34,46 @@ button {
 button:hover {
 	border-color: #333;
 }
+
+h2 {
+	cursor: pointer;
+	background: #efefef;
+	position: relative;
+	display: block;
+	float: left;
+	width: calc(100% - 1em);
+	padding: .5em;
+	margin: 0;
+}
+
+h2:after {
+	content: '\25b6';
+	position: absolute;
+}
+
+h2.open:after {
+	content: '\25bc';
+}
+
+.hide {
+	display: none;
+}
+
+#ciphers,
+#hashers,
+#encoders,
+#packers {
+	float: left;
+	clear: both;
+	padding: 0 1em;
+	background: #efefef;
+}
+
+.output {
+	clear: left;
+	margin-top: .5em;
+	width: 810px;
+}
 </style>
 <script src="CryptoLib.js"></script>
 </head>
@@ -36,64 +81,84 @@ button:hover {
 <h1>CryptoLib</h1>
 
 <h2>Ciphers</h2>
-<div id="aes">
-	<h3>AES</h3>
-	<input type="text" id="aes-input" placeholder="Input">
-	<input type="text" id="aes-pass" placeholder="Passphrase">
-	<button id="aes-enc" type="button">Encrypt</button>
-	<button id="aes-dec" type="button">Decrypt</button>
-	<input type="text" id="aes-output" placeholder="Output">
+<div id="ciphers" class="hide">
+	<div id="aes">
+		<h3>AES</h3>
+		<input type="text" id="aes-input" placeholder="Input">
+		<input type="text" id="aes-pass" placeholder="Passphrase">
+		<button id="aes-enc" type="button">Encrypt</button>
+		<button id="aes-dec" type="button">Decrypt</button>
+		<input type="text" id="aes-output" class="output" placeholder="Output">
+	</div>
+	<div id="des">
+		<h3>DES</h3>
+		<input type="text" id="des-input" placeholder="Input">
+		<input type="text" id="des-pass" placeholder="Passphrase">
+		<button id="des-enc" type="button">Encrypt</button>
+		<button id="des-dec" type="button">Decrypt</button>
+		<input type="text" id="des-output" class="output" placeholder="Output">
+	</div>
+	<div id="rabbit">
+		<h3>Rabbit</h3>
+		<input type="text" id="rabbit-input" placeholder="Input">
+		<input type="text" id="rabbit-pass" placeholder="Passphrase">
+		<button id="rabbit-enc" type="button">Encrypt</button>
+		<button id="rabbit-dec" type="button">Decrypt</button>
+		<input type="text" id="rabbit-output" class="output" placeholder="Output">
+	</div>
+	<div id="rc4">
+		<h3>RC4</h3>
+		<input type="text" id="rc4-input" placeholder="Input">
+		<input type="text" id="rc4-pass" placeholder="Passphrase">
+		<button id="rc4-enc" type="button">Encrypt</button>
+		<button id="rc4-dec" type="button">Decrypt</button>
+		<input type="text" id="rc4-output" class="output" placeholder="Output">
+	</div>
+	<div id="rc4drop">
+		<h3>RC4Drop</h3>
+		<input type="text" id="rc4drop-input" placeholder="Input">
+		<input type="text" id="rc4drop-pass" placeholder="Passphrase">
+		<button id="rc4drop-enc" type="button">Encrypt</button>
+		<button id="rc4drop-dec" type="button">Decrypt</button>
+		<input type="text" id="rc4drop-output" class="output" placeholder="Output">
+	</div>
+	<div id="tripledes">
+		<h3>TripleDes</h3>
+		<input type="text" id="tripledes-input" placeholder="Input">
+		<input type="text" id="tripledes-pass" placeholder="Passphrase">
+		<button id="tripledes-enc" type="button">Encrypt</button>
+		<button id="tripledes-dec" type="button">Decrypt</button>
+		<input type="text" id="tripledes-output" class="output" placeholder="Output">
+	</div>
 </div>
 
-<div id="des">
-	<h3>DES</h3>
-	<input type="text" id="des-input" placeholder="Input">
-	<input type="text" id="des-pass" placeholder="Passphrase">
-	<button id="des-enc" type="button">Encrypt</button>
-	<button id="des-dec" type="button">Decrypt</button>
-	<input type="text" id="des-output" placeholder="Output">
+<h2>Hashers</h2>
+<div id="hashers" class="hide">
+
 </div>
 
-<div id="rabbit">
-	<h3>Rabbit</h3>
-	<input type="text" id="rabbit-input" placeholder="Input">
-	<input type="text" id="rabbit-pass" placeholder="Passphrase">
-	<button id="rabbit-enc" type="button">Encrypt</button>
-	<button id="rabbit-dec" type="button">Decrypt</button>
-	<input type="text" id="rabbit-output" placeholder="Output">
+<h2>Encoders</h2>
+<div id="encoders" class="hide">
+
 </div>
 
-<div id="rc4">
-	<h3>RC4</h3>
-	<input type="text" id="rc4-input" placeholder="Input">
-	<input type="text" id="rc4-pass" placeholder="Passphrase">
-	<button id="rc4-enc" type="button">Encrypt</button>
-	<button id="rc4-dec" type="button">Decrypt</button>
-	<input type="text" id="rc4-output" placeholder="Output">
-</div>
+<h2>Packers</h2>
+<div id="packers" class="hide">
 
-<div id="rc4drop">
-	<h3>RC4Drop</h3>
-	<input type="text" id="rc4drop-input" placeholder="Input">
-	<input type="text" id="rc4drop-pass" placeholder="Passphrase">
-	<button id="rc4drop-enc" type="button">Encrypt</button>
-	<button id="rc4drop-dec" type="button">Decrypt</button>
-	<input type="text" id="rc4drop-output" placeholder="Output">
-</div>
-
-<div id="tripledes">
-	<h3>TripleDes</h3>
-	<input type="text" id="tripledes-input" placeholder="Input">
-	<input type="text" id="tripledes-pass" placeholder="Passphrase">
-	<button id="tripledes-enc" type="button">Encrypt</button>
-	<button id="tripledes-dec" type="button">Decrypt</button>
-	<input type="text" id="tripledes-output" placeholder="Output">
 </div>
 
 <script>
 const CryptoLib = require('CryptoLib');
 
 const byteCount = str => new TextEncoder().encode(str).byteLength * 8;
+
+// Toggling sections
+[...document.querySelectorAll('h2')].map(h2 => {
+	h2.addEventListener('click', _ => {
+		document.getElementById(h2.innerText.toLowerCase()).classList.toggle('hide');
+		h2.classList.toggle('open');
+	});
+});
 
 // Ciphers
 const ciphers = {

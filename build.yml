@@ -37,6 +37,9 @@ Rabbit	128-bit key and a 64-bit initialization vector
 Table of broken ciphers:
 https://en.wikipedia.org/wiki/Cipher_security_summary
 
+Regarding RSA (rsa-alternative):
+ec.js and sec.js are demonstrated in ecdh.html but haven't yet figured out what it is for
+
 Block ciphers:
 Common algorithms:
 AES, Blowfish, DES, Serpent, Twofish
