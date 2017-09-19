@@ -18,8 +18,9 @@
   "scripts": {
     "build": "browserify -r ./lib/CryptoLib.js:CryptoLib -o ./dist/CryptoLib.js",
     "build-rsa": "browserify -r ./lib/Ciphers/rsa.js:RSAKey -o ./dist/rsa.js",
+    "build-blowfish": "browserify -r ./lib/Ciphers/blowfish.js:Blowfish -o ./dist/blowfish.js",
     "build-min": "browserify -t uglifyify -r ./lib/CryptoLib.js:CryptoLib -o ./dist/CryptoLib.js",
-	"rollup-aes": "rollup -c",
+    "rollup-aes": "rollup -c",
     "test": "mocha --recursive"
   },
   "engines": {

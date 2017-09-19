@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<script src="blowfish.js"></script>
+</head>
+<body>
+<input type="text" id="key" placeholder="key" value="foobar">
+<textarea id="input">Hello world!</textarea>
+<label for="cbc"><input type="checkbox" id="cbc"> CBC</label>
+<button type="button" id="encrypt">Encrypt</button>
+<button type="button" id="decrypt">Decrypt</button>
+<textarea id="output"></textarea>
+
+<script>
+window.addEventListener('load', _ => {
+	const Blowfish = require('Blowfish');
+
+	const [input, key, encrypt, decrypt, output] =
+		['input', 'key', 'encrypt', 'decrypt', 'output'].map(id => document.getElementById(id));
+
+	encrypt.addEventListener('click', e => {
+		if (!input.value || !key.value) {
+			throw new Error('Input and/or key are empty');
+		}
+
+		let bf = new Blowfish();
+		bf.init(key.value, cbc.checked ? 'cbc' : 'ecb');
+		output.value = btoa(bf.encrypt(input.value));
+	});
+
+	decrypt.addEventListener('click', e => {
+		if (!input.value || !key.value) {
+			throw new Error('Input and/or key are empty');
+		}
+
+		let bf = new Blowfish();
+		bf.init(key.value, cbc.checked ? 'cbc' : 'ecb');
+		output.value = bf.trimZeros(bf.decrypt(atob(output.value)));
+	});
+});
+</script>
+</body>
+</html>

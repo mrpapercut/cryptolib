@@ -26,13 +26,14 @@ rollups:
     rabbit-legacy:  [core, enc-base64, md5, evpkdf, cipher-core, rabbit-legacy]
 
 key sizes:
-AES		128-bit (min)
-DES		56-bit
-3DES	168-bit (192 but 24 bits discarded)
-RC4		40-bit (min)
-RC5		128-bit (min recommended)
-RC6		128/192/256-bits
-Rabbit	128-bit key and a 64-bit initialization vector
+AES       128-bit (min)
+DES       56-bit
+3DES      168-bit (192 but 24 bits discarded)
+RC4       40-bit (min)
+RC5       128-bit (min recommended)
+RC6       128/192/256-bits
+Rabbit    128-bit key and a 64-bit initialization vector
+Blowfish  32-448 bits
 
 Table of broken ciphers:
 https://en.wikipedia.org/wiki/Cipher_security_summary
