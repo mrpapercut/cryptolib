@@ -1,0 +1,223 @@
+<!doctype html>
+<html>
+<head>
+<script src="rsa.js"></script>
+
+<style>
+div {
+	clear: both;
+	float: left;
+	width: 100%;
+}
+
+textarea {
+	width: 550px;
+	height: 250px;
+}
+
+label {
+	display: block;
+	clear: both;
+	float: left;
+	margin: 0.25em 0;
+	font-family: monospace;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+hr {
+	clear: both;
+	float: left;
+	width: 100%;
+}
+</style>
+</head>
+<body>
+<div>
+    <textarea id="input">
+-----BEGIN RSA PRIVATE KEY-----
+MIICWwIBAAKBgQDLADt9MIyCy7YFOBKd2a673gbnS0IlUR7eLxkCXF0kQVuifXX4
+ttHk7DcwrfYr7OkEsd14JwT4AHwUvd35lq5ozZPY6h+Y3dd+8JKIXebEsuIxMJdI
+KzOCveMWW49RQkcNLpyf2pkU2/l9Lk6U8NovJjCjwi5jp0nW+sCDZyg1vQIDAQAB
+AoGAT7LdqD7hS5Cy+8WR+Ys3QObgivpPE9uPZOfUx8p/fvZyBY+AO497RIdA+8mw
+tnoi2gcCzmNzXfLCxFnuxkjUW/n0LVu5ppRs2yeOj9dfjCxHYhJpPC8RD8h0uhC6
+EU/ll0yPGiE+orR/wV47uoge1Cg5vw5A+Oyn4gC5CRfeFTkCQQDvPOE6/0a/3Vfv
+8EKQqLwUe+IZiXghD454vQu6eet4Ew2z6CfWXwWLxIuOW+2eBz+/8zKs+5UO2nTL
+em9md4zHAkEA2TlidnvaWDUEg3PQibEDqmczbrxSDm0dOhl//6l3H0g0EhyxUnEj
+/zaoDvkc97aJXfFvVOok67lcfM9DabR9WwJAeucHvktOiVqoxnbje3VzygIqkXvx
+3uojAxv7Xn0r3q/LJlVpwdNnAfqixyuq0rheo7nImt1UIiFQRwhLGpToGQJAf6fb
+l2m9rSyrFF1RZjmiv9eaQC9nwZaaIHSv5h0/JiEWiLZX9u0KjIcgSHxZa7HYFF84
+YByhye3KzoY3Rb2OFQJAOKM6BYLWVyaX7ziB9WIRWRdPHFWXrXAWxhW4+jf2ycur
+ktIh4bgHYrlBpxWGxst+BOLc8ZET6OfdYB9kIGO7Sg==
+-----END RSA PRIVATE KEY-----
+    </textarea>
+    <textarea id="cipher">Hello world!</textarea>
+</div>
+<div>
+    <button id="extract" type="button">Extract components</button>
+    <button id="encrypt">Encrypt</button>
+    <button id="decrypt">Decrypt</button>
+</div>
+<hr>
+<div>
+    <h3>Result:</h3>
+    <label for="header">Header: <span id="header"></span></label>
+    <label for="algorithmVersion">Algorithm Version: <span id="algorithmVersion"></span></label>
+    <label for="modulus">Modulus: <span id="modulus"></span></label>
+    <label for="publicExponent">Public Exponent: <span id="publicExponent"></span></label>
+    <label for="privateExponent">Private Exponent: <span id="privateExponent"></span></label>
+    <label for="prime1">Prime 1: <span id="prime1"></span></label>
+    <label for="prime2">Prime 2: <span id="prime2"></span></label>
+    <label for="exponent1">Exponent 1: <span id="exponent1"></span></label>
+    <label for="exponent2">Exponent 2: <span id="exponent2"></span></label>
+    <label for="coefficient">Coefficient: <span id="coefficient"></span></label>
+</div>
+<hr>
+<script>
+const RSAKey = require('RSAKey');
+
+// https://etherhack.co.uk/asymmetric/docs/rsa_key_breakdown.html
+const parsePrivateKey1024 = keyArr => {
+	/** Format:
+	 * Separator is <1 byte type> <1 or 2 byte length>
+	 * header				4 bytes		30 82 xx xx
+	 * separator			2 bytes		02 01
+	 * algorithm version	1 byte		00
+	 * separator			3 bytes		02 81 81
+	 * modulus				0x81 bytes	Starts with 0x00, remove
+	 * separator			2 bytes		02 03
+	 * public exponent		3 bytes		01 00 01
+	 * separator			3 bytes		02 81 81
+	 * private exponent		0x81 bytes	Starts with 0x00, remove
+	 * separator			2 bytes		02 41
+	 * prime 1				0x41 bytes	Starts with 0x00, remove
+	 * separator			2 bytes		02 41
+	 * prime 2				0x41 bytes	Starts with 0x00, remove
+	 * separator			2 bytes		02 41
+	 * exponent 1			0x41 bytes
+	 * separator			2 bytes		02 41
+	 * exponent 2			0x41 bytes	Starts with 0x00, remove
+	 * separator			2 bytes		02 41
+	 * coefficient			0x41 bytes	Starts with 0x00, don't remove
+	 */
+
+	// Strips bytes from beginning of keyArr;
+	const getBytes = n => {
+		let res = [];
+		for (let i = 0; i < n; i++) {
+			res.push(keyArr.shift());
+		}
+		return res;
+	};
+
+	const C = {
+		'header': [],
+		'algorithmVersion': [],
+		'modulus': [],
+		'publicExponent': [],
+		'privateExponent': [],
+		'prime1': [],
+		'prime2': [],
+		'exponent1': [],
+		'exponent2': [],
+		'coefficient': []
+	}
+
+	let sep = [];
+
+	C.header			= getBytes(4);
+	sep					= getBytes(2);
+	C.algorithmVersion	= getBytes(parseInt(sep.pop(), 16));
+	sep					= getBytes(3);
+	C.modulus			= getBytes(parseInt(sep.pop(), 16));
+	sep					= getBytes(2);
+	C.publicExponent	= getBytes(parseInt(sep.pop(), 16));
+	sep					= getBytes(3);
+	C.privateExponent	= getBytes(parseInt(sep.pop(), 16));
+	sep					= getBytes(2);
+	C.prime1			= getBytes(parseInt(sep.pop(), 16));
+	sep					= getBytes(2);
+	C.prime2			= getBytes(parseInt(sep.pop(), 16));
+	sep					= getBytes(2);
+	C.exponent1			= getBytes(parseInt(sep.pop(), 16));
+	sep					= getBytes(2);
+	C.exponent2			= getBytes(parseInt(sep.pop(), 16));
+	sep					= getBytes(2);
+	C.coefficient		= getBytes(parseInt(sep.pop(), 16));
+
+	for (let i in C) {
+		C[i] = C[i].join('');
+		document.querySelector('#' + i).innerHTML = C[i];
+	}
+
+	return C;
+}
+
+// https://etherhack.co.uk/asymmetric/docs/rsa_2048.html
+// https://etherhack.co.uk/asymmetric/docs/rsa_4096.html
+
+/* For RSA.js
+modulus => n
+public exponent => e
+private exponent => d
+prime1 => p
+prime2 => q
+exponent1 => dmp1
+exponent2 => dmq1
+coefficient => coeff
+*/
+
+/*
+Generate key:
+$ openssl genrsa -out <filename> 1024
+Parse key:
+$ openssl rsa -text -in <filename>
+*/
+
+window.addEventListener('load', _ => {
+	let input = document.querySelector('#input');
+    let output = document.querySelector('#cipher');
+    let rsa = new RSAKey();
+    console.log(rsa);
+
+    const parseInput = () => {
+		let noheaders = input.value.split('\n').map(line => line.replace(/\s/g, '').replace(/^-{5}[A-Z\s]+-{5}/g, '')).join('');
+		let res = [];
+		for (let c of atob(noheaders)) {
+			res.push(('0' + c.codePointAt(0).toString(16)).substr(-2));
+		}
+
+		return parsePrivateKey1024(res);
+    }
+
+	document.querySelector('#extract').addEventListener('click', e => {
+		parseInput();
+        /*let noheaders = input.value.split('\n').map(line => line.replace(/\s/g, '').replace(/^-{5}[A-Z\s]+-{5}/g, '')).join('');
+		let res = [];
+		for (let c of atob(noheaders)) {
+			res.push(('0' + c.codePointAt(0).toString(16)).substr(-2).toUpperCase());
+		}
+
+		parsePrivateKey1024(res);*/
+	});
+
+	document.querySelector('#encrypt').addEventListener('click', e => {
+		let C = parseInput();
+
+		rsa.setPublic(C.modulus, C.publicExponent);
+
+        output.value = btoa(rsa.encrypt(output.value));
+	});
+
+	document.querySelector('#decrypt').addEventListener('click', e => {
+		let C = parseInput();
+
+		rsa.setPrivateEx(C.modulus, C.publicExponent, C.privateExponent, C.prime1, C.prime2, C.exponent1, C.exponent2, C.coefficient);
+
+		output.value = rsa.decrypt(atob(output.value));
+	});
+});
+</script>
+</body>
+</html>

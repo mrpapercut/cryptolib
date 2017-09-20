@@ -102,21 +102,21 @@ const NullExp    = require('./NullExp');
 var canary = 0xdeadbeefcafe;
 var j_lm = ((canary & 0xffffff) == 0xefcafe);
 
-// Helpers?
-function int2char(n) {
-    return "0123456789abcdefghijklmnopqrstuvwxyz".charAt(n);
-}
+// Digit conversions
+var BI_RM = "0123456789abcdefghijklmnopqrstuvwxyz";
+var BI_RC = new Array();
+var rr,vv;
+rr = "0".charCodeAt(0);
+for(vv = 0; vv <= 9; ++vv) BI_RC[rr++] = vv;
+rr = "a".charCodeAt(0);
+for(vv = 10; vv < 36; ++vv) BI_RC[rr++] = vv;
+rr = "A".charCodeAt(0);
+for(vv = 10; vv < 36; ++vv) BI_RC[rr++] = vv;
 
-function intAt(s, i) {
-	var c = [
-		,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-		0,1,2,3,4,5,6,7,8,9,,,,,,,,10,11,12,13,14,15,16,
-		17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,
-		33,34,35,,,,,,,10,11,12,13,14,15,16,17,18,19,20,
-		21,22,23,24,25,26,27,28,29,30,31,32,33,34,35
-	][s.charCodeAt(i)];
-
-    return (c == null) ? -1 : c;
+function int2char(n) { return BI_RM.charAt(n); }
+function intAt(s,i) {
+    var c = BI_RC[s.charCodeAt(i)];
+    return (c==null)?-1:c;
 }
 
 // returns bit length of the integer x
@@ -147,17 +147,7 @@ function nbits(x) {
 }
 
 class BigInteger {
-	constructor(a,b,c) {
-		if(a != null) {
-			if("number" == typeof a) {
-				this.fromNumber(a,b,c);
-			} else if(b == null && "string" != typeof a) {
-				this.fromString(a,256);
-			} else {
-				this.fromString(a,b);
-			}
-		}
-
+	constructor(a, b, c) {
 		this.DB = 28;
 		this.DM = ((1 << this.DB) - 1);
 		this.DV = (1 << this.DB);
@@ -167,8 +157,15 @@ class BigInteger {
 		this.F1 = this.BI_FP - this.DB;
 		this.F2 = 2 * this.DB - this.BI_FP;
 
-		// this.ZERO = this._newInstanceFromInt(0);
-		// this.ONE = this._newInstanceFromInt(1);
+		if(a != null) {
+			if("number" == typeof a) {
+				this.fromNumber(a,b,c);
+			} else if(b == null && "string" != typeof a) {
+				this.fromString(a,256);
+			} else {
+				this.fromString(a,b);
+			}
+		}
 	}
 
 	// AKA function nbi() { }
@@ -255,6 +252,7 @@ class BigInteger {
 			this.s = -1;
 			if (sh > 0) this[this.t - 1] |= ((1 << (this.DB - sh)) - 1) << sh;
 		}
+
 		this.clamp();
 		if (mi) this._newInstanceFromInt(0).subTo(this, this);
 	}
@@ -546,7 +544,7 @@ class BigInteger {
 			this.dMultiply(Math.pow(b, j));
 			this.dAddOffset(w, 0);
 		}
-		if (mi) BigInteger.ZERO.subTo(this, this);
+		if (mi) ZERO.subTo(this, this);
 	}
 
 	// (protected) alternate constructor
@@ -557,11 +555,11 @@ class BigInteger {
 			else {
 				this.fromNumber(a, c);
 				if (!this.testBit(a - 1)) // force MSB set
-					this.bitwiseTo(BigInteger.ONE.shiftLeft(a - 1), op_or, this);
+					this.bitwiseTo(ONE.shiftLeft(a - 1), op_or, this);
 				if (this.isEven()) this.dAddOffset(1, 0); // force odd
 				while (!this.isProbablePrime(b)) {
 					this.dAddOffset(2, 0);
-					if (this.bitLength() > a) this.subTo(BigInteger.ONE.shiftLeft(a - 1), this);
+					if (this.bitLength() > a) this.subTo(ONE.shiftLeft(a - 1), this);
 				}
 			}
 		} else {
@@ -595,7 +593,7 @@ class BigInteger {
 
 	// (protected) this op (1<<n)
 	changeBit(n, op) {
-		var r = BigInteger.ONE.shiftLeft(n);
+		var r = ONE.shiftLeft(n);
 		this.bitwiseTo(r, op, r);
 		return r;
 	}
@@ -693,7 +691,7 @@ class BigInteger {
 
 	// (protected) true if probably prime (HAC 4.24, Miller-Rabin)
 	millerRabin(t) {
-		var n1 = this.subtract(BigInteger.ONE);
+		var n1 = this.subtract(ONE);
 		var k = n1.getLowestSetBit();
 		if (k <= 0) return false;
 		var r = n1.shiftRight(k);
@@ -704,11 +702,11 @@ class BigInteger {
 			//Pick bases at random, instead of starting at 2
 			a.fromInt(lowprimes[Math.floor(Math.random() * lowprimes.length)]);
 			var y = a.modPow(r, this);
-			if (y.compareTo(BigInteger.ONE) != 0 && y.compareTo(n1) != 0) {
+			if (y.compareTo(ONE) != 0 && y.compareTo(n1) != 0) {
 				var j = 1;
 				while (j++ < k && y.compareTo(n1) != 0) {
 					y = y.modPowInt(2, this);
-					if (y.compareTo(BigInteger.ONE) == 0) return false;
+					if (y.compareTo(ONE) == 0) return false;
 				}
 				if (y.compareTo(n1) != 0) return false;
 			}
@@ -1155,7 +1153,7 @@ class BigInteger {
 	// (public) 1/this % m (HAC 14.61)
 	modInverse(m) {
 		var ac = m.isEven();
-		if ((this.isEven() && ac) || m.signum() == 0) return BigInteger.ZERO;
+		if ((this.isEven() && ac) || m.signum() == 0) return ZERO;
 		var u = m.clone(),
 			v = this.clone();
 		var a = this._newInstanceFromInt(1),
@@ -1195,7 +1193,7 @@ class BigInteger {
 				d.subTo(b, d);
 			}
 		}
-		if (v.compareTo(BigInteger.ONE) != 0) return BigInteger.ZERO;
+		if (v.compareTo(ONE) != 0) return ZERO;
 		if (d.compareTo(m) >= 0) return d.subtract(m);
 		if (d.signum() < 0) d.addTo(m, d);
 		else return d;
@@ -1260,6 +1258,9 @@ class BigInteger {
 	}
 }
 
+const ZERO = new BigInteger()._newInstanceFromInt(0);
+const ONE = new BigInteger()._newInstanceFromInt(1);
+
 module.exports = BigInteger;
 
 },{"./Barrett":2,"./Classic":4,"./Montgomery":5,"./NullExp":6}],4:[function(require,module,exports){
@@ -1297,7 +1298,7 @@ class Classic {
 module.exports = Classic;
 
 },{}],5:[function(require,module,exports){
-const BigInteger = require('./BigInteger');
+const BigInteger2 = require('./BigInteger');
 
 class Montgomery {
 	constructor(m) {
@@ -1311,7 +1312,7 @@ class Montgomery {
 
 	// xR mod m
 	convert(x) {
-		var r = new BigInteger();
+		var r = x._newInstance(); // new BigInteger();
 		x.abs().dlShiftTo(this.m.t, r);
 		r.divRemTo(this.m, null, r);
 		if (x.s < 0 && r.compareTo(r._newInstanceFromInt(0)) > 0) this.m.subTo(r, r);
@@ -1320,7 +1321,7 @@ class Montgomery {
 
 	// x/R mod m
 	revert(x) {
-		var r = new BigInteger();
+		var r = x._newInstance(); // new BigInteger();
 		x.copyTo(r);
 		this.reduce(r);
 		return r;
@@ -1466,7 +1467,10 @@ module.exports = SecureRandom;
 
 },{"./Arcfour":1}],"RSAKey":[function(require,module,exports){
 const BigInteger = require('../Helpers/RSA/BigInteger');
-const SecureRandom = require('../Helpers/RSA/SecureRandom');
+const SecureRandom  = require('../Helpers/RSA/SecureRandom');
+
+const ZERO = new BigInteger().ZERO;
+const ONE = new BigInteger().ONE;
 
 class RSAKey {
 	constructor() {
@@ -1487,7 +1491,7 @@ class RSAKey {
 	// PKCS#1 (type 2, random) pad input string s to n bytes, and return a bigint
 	pkcs1pad2(s, n) {
 		if (n < s.length + 11) { // TODO: fix for utf-8
-			alert("Message too long for RSA");
+			console.error("Message too long for RSA");
 			return null;
 		}
 		var ba = new Array();
@@ -1555,7 +1559,7 @@ class RSAKey {
 			this.n = this.parseBigInt(N, 16);
 			this.e = parseInt(E, 16);
 		} else {
-			alert("Invalid RSA public key");
+			console.error("Invalid RSA public key");
 		}
 	}
 
@@ -1593,7 +1597,7 @@ class RSAKey {
 			this.e = parseInt(E, 16);
 			this.d = this.parseBigInt(D, 16);
 		} else
-			alert("Invalid RSA private key");
+			console.error("Invalid RSA private key");
 	}
 
 	// Set the private key fields N, e, d and CRT params from hex strings
@@ -1609,7 +1613,7 @@ class RSAKey {
 			this.coeff = this.parseBigInt(C, 16);
 		} else {
 			// TODO: Fix errors
-			alert("Invalid RSA private key");
+			console.error("Invalid RSA private key");
 		}
 	}
 
@@ -1622,21 +1626,21 @@ class RSAKey {
 		for (;;) {
 			for (;;) {
 				this.p = new BigInteger(B - qs, 1, rng);
-				if (this.p.subtract(BigInteger.ONE).gcd(ee).compareTo(BigInteger.ONE) == 0 && this.p.isProbablePrime(10)) break;
+				if (this.p.subtract(ONE).gcd(ee).compareTo(ONE) == 0 && this.p.isProbablePrime(10)) break;
 			}
 			for (;;) {
 				this.q = new BigInteger(qs, 1, rng);
-				if (this.q.subtract(BigInteger.ONE).gcd(ee).compareTo(BigInteger.ONE) == 0 && this.q.isProbablePrime(10)) break;
+				if (this.q.subtract(ONE).gcd(ee).compareTo(ONE) == 0 && this.q.isProbablePrime(10)) break;
 			}
 			if (this.p.compareTo(this.q) <= 0) {
 				var t = this.p;
 				this.p = this.q;
 				this.q = t;
 			}
-			var p1 = this.p.subtract(BigInteger.ONE);
-			var q1 = this.q.subtract(BigInteger.ONE);
+			var p1 = this.p.subtract(ONE);
+			var q1 = this.q.subtract(ONE);
 			var phi = p1.multiply(q1);
-			if (phi.gcd(ee).compareTo(BigInteger.ONE) == 0) {
+			if (phi.gcd(ee).compareTo(ONE) == 0) {
 				this.n = this.p.multiply(this.q);
 				this.d = ee.modInverse(phi);
 				this.dmp1 = this.d.mod(p1);
