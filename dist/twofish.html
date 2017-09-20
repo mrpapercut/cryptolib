@@ -17,13 +17,34 @@ window.addEventListener('load', _ => {
 
 	const tf = new Twofish();
 
-	let key = 'foobar';
+	let key2 = 'foobar';
 	let plaintext = 'Hello world!';
 
-	console.log(tf.encrypt(tf.stringToByteArray(key), tf.stringToByteArray(plaintext)));
+    const fromBase64 = string => {
+        return atob(string).split('|').map(hex => parseInt(hex, 16))
+    }
 
-	/*
-	const [input, key, encrypt, decrypt, output] =
+    const toBase64 = byteArray => {
+        let str = tf.byteArrayToString(byteArray);
+        let res = [];
+        console.log(byteArray);
+
+        for (let i of str) {
+            res.push(i.codePointAt(0).toString(16));
+        }
+
+        return btoa(res.join('|'));
+    }
+
+    const trimByteArray = arr => arr.filter(Number);
+
+    let _encr;
+
+    const encrypted = tf.encrypt(tf.stringToByteArray(key2), tf.stringToByteArray(plaintext));
+	console.log(toBase64(encrypted));
+    console.log(trimByteArray(tf.decrypt(tf.stringToByteArray(key2), encrypted)));
+
+    const [input, key, encrypt, decrypt, output] =
 		['input', 'key', 'encrypt', 'decrypt', 'output'].map(id => document.getElementById(id));
 
 	encrypt.addEventListener('click', e => {
@@ -31,9 +52,13 @@ window.addEventListener('load', _ => {
 			throw new Error('Input and/or key are empty');
 		}
 
-		let bf = new Twofish();
-		bf.init(key.value, cbc.checked ? 'cbc' : 'ecb');
-		output.value = btoa(bf.encrypt(input.value));
+        console.log(key.value, input.value);
+
+        const encrypted = tf.encrypt(tf.stringToByteArray(key.value), tf.stringToByteArray(input.value));
+
+        _encr = encrypted;
+        console.log(_encr);
+		output.value = toBase64(encrypted);
 	});
 
 	decrypt.addEventListener('click', e => {
@@ -41,11 +66,12 @@ window.addEventListener('load', _ => {
 			throw new Error('Input and/or key are empty');
 		}
 
-		let bf = new Twofish();
-		bf.init(key.value, cbc.checked ? 'cbc' : 'ecb');
-		output.value = bf.trimZeros(bf.decrypt(atob(output.value)));
+        console.log(atob(output.value).split('|').map(hex => parseInt(hex, 16)), _encr);
+
+        const decrypted = tf.decrypt(tf.stringToByteArray(key.value), fromBase64(output.value));
+console.log(decrypted);
+        output.value = tf.byteArrayToString(decrypted);
 	});
-	*/
 });
 </script>
 </body>
