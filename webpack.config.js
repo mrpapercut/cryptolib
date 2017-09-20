@@ -10,7 +10,7 @@ module.exports = {
             loader: 'babel-loader',
             include: [path.resolve(__dirname, 'lib')],
             query: {
-                presets: ['es2015']
+                presets: ['env']
             }
         }]
     },
