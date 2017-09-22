@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: {
-        MD5: './entry/MD5'
+        CryptoLib: './lib/CryptoLib'
     },
     module: {
         loaders: [{
@@ -19,10 +19,10 @@ module.exports = {
         filename: '[name].js'
     },
     plugins: [
-        new webpack.optimize.UglifyJsPlugin(),
+        /*new webpack.optimize.UglifyJsPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             filename: 'commons.js',
             name: 'commons'
-        })
+        })*/
     ]
 }

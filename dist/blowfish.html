@@ -23,9 +23,9 @@ window.addEventListener('load', _ => {
 			throw new Error('Input and/or key are empty');
 		}
 
-		let bf = new Blowfish();
-		bf.init(key.value, cbc.checked ? 'cbc' : 'ecb');
-		output.value = btoa(bf.encrypt(input.value));
+		let bf2 = new Blowfish()._createHelper();
+
+		output.value = bf2.encrypt(input.value, key.value);
 	});
 
 	decrypt.addEventListener('click', e => {
@@ -33,9 +33,8 @@ window.addEventListener('load', _ => {
 			throw new Error('Input and/or key are empty');
 		}
 
-		let bf = new Blowfish();
-		bf.init(key.value, cbc.checked ? 'cbc' : 'ecb');
-		output.value = bf.trimZeros(bf.decrypt(atob(output.value)));
+		let bf = new Blowfish()._createHelper();
+		output.value = bf.decrypt(output.value, key.value);
 	});
 });
 </script>

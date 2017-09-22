@@ -16,62 +16,21 @@
 window.addEventListener('load', _ => {
 	const Twofish = require('Twofish');
 
-	const tf = new Twofish();
+	const tf = new Twofish()._createHelper();
+
     const [input, key, encrypt, decrypt, output] =
 		['input', 'key', 'encrypt', 'decrypt', 'output', 'hiddenout'].map(id => document.getElementById(id));
-
-	const stringToByteArray = str => {
-		// Return array should always be multi of 16, right-padded with zeros
-		let res = [];
-		for (let c of str) {
-			res.push(c.codePointAt(0)); // .toString(16));
-		}
-
-		let mod = res.length % 16;
-		let padLength = mod !== 0 ? 16 - mod : 0;
-		for (let i = 0; i < padLength; i++) res.push(0);
-
-		return res;
-	}
-
-	const byteArrayToString = bA => {
-		// Remove zeropadding
-		bA = bA.filter(Number);
-
-		let res = bA.map(c => String.fromCodePoint(c));
-		return res.join('');
-	}
-
-	const toBase64 = arr => {
-		if (arr.constructor.name === 'String') arr = stringToByteArray(arr);
-
-		let res = arr.map(c => c.toString(16)).join('|');
-
-		return btoa(res);
-	}
-
-	const fromBase64 = b64 => {
-		let arr = atob(b64).split('|');
-
-		let res = arr.map(c => parseInt(c, 16));
-
-		return res;
-	}
 
 	encrypt.addEventListener('click', e => {
 		if (!input.value || !key.value) throw new Error('Input and/or key are empty');
 
-        const encrypted = tf.encrypt(stringToByteArray(key.value), stringToByteArray(input.value));
-
-		output.value = toBase64(encrypted);
+		output.value = tf.encrypt(input.value, key.value);
 	});
 
 	decrypt.addEventListener('click', e => {
 		if (!output.value || !key.value) throw new Error('Input and/or key are empty');
 
-        const decrypted = tf.decrypt(stringToByteArray(key.value), fromBase64(output.value));
-
-        output.value = byteArrayToString(decrypted);
+        output.value = tf.decrypt(output.value, key.value);
 	});
 });
 </script>

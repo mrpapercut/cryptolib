@@ -573,6 +573,26 @@ class Blowfish {
     trimZeros(input) {
         return input.replace(/\0+$/g, '');
     }
+
+	_createHelper() {
+		let algo = new Blowfish();
+
+		/*
+		bf.init(key.value, cbc.checked ? 'cbc' : 'ecb');
+		output.value = bf.trimZeros(bf.decrypt(atob(output.value)));
+		*/
+
+		return {
+			encrypt: (message, key) => {
+				algo.init(key);
+				return btoa(algo.encrypt(message));
+			},
+			decrypt: (ciphertext, key) => {
+				algo.init(key);
+				return algo.trimZeros(algo.decrypt(atob(ciphertext)));
+			}
+		}
+	}
 };
 
 module.exports = Blowfish;
